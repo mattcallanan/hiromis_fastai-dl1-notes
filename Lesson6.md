@@ -2,223 +2,48 @@
 
 [Video](https://youtu.be/U7c-nYXrKD4) / [Course Forum](https://forums.fast.ai/t/lesson-6-official-resources-and-updates/31441)
 
-Welcome to lesson 6 where we're going to do a deep dive into computer vision, convolutional neural networks, what is a convolution, and we're also going to learn the final regularization tricks after last lesson learning about weight decay/L2 regularization.
-
-### Platform.ai 
-
-I want to start by showing you something that I'm really excited about and I've had a small hand and helping to to create. For those of you that saw [my talk on ted.com](https://www.ted.com/talks/jeremy_howard_the_wonderful_and_terrifying_implications_of_computers_that_can_learn/up-next?language=en), you might have noticed this really interesting demo that we did about four years ago showing a way to quickly build models with unlabeled data. It's been four years but we're finally at a point where we're ready to put this out in the world and let people use it. And the first people we're going to let use it are you folks.
-
-So the company is called [platform.ai](https://platform.ai/) and the reason I'm mentioning it here is that it's going to let you create models on different types of datasets to what you can do now, that is to say datasets that you don't have labels for yet. We're actually going to help you label them. So this is the first time this has been shown before, so I'm pretty thrilled about it. Let me give you a quick demo.
-
-If you'd go to platform.ai and choose "get started" you'll be able to create a new project. And if you create a new project you can either upload your own images. Uploading it at 500 or so works pretty well. You can upload a few thousand, but to start, upload 500 or so. They all have to be in a single folder. So we're assuming that you've got a whole bunch of images that you haven't got any labels for or you can start with one of the existing collections if you want to play around, so I've started with the cars collection kind of going back to what we did four years ago.
-
-This is what happens when you first go into platform.ai and look at the collection of images you've uploaded - a random sample of them will appear on the screen. As you'll recognize, they are projected from a deep learning space into a 2D space using a pre-trained model. For this initial version, it's an ImageNet model we're using. As things move along, we'll be adding more and more pre train models. And what I'm going to do is I want to add labels to this data set representing which angle a photo of the car was taken from which is something that actually ImageNet is going to be really bad at because ImageNet has learnt to recognize the difference between cars versus bicycles and ImageNet knows that the angle you take a photo on actually doesn't matter. So we want to try and create labels using the kind of thing that actually ImageNet specifically learn to ignore. 
-
-So the projection that you see, we can click these layer buttons at the top to switch to user projection using a different layer of the neural net. Here's the last layer which is going to be a total waste of time for us because it's really going to be projecting things based on what kind of thing it thinks it is. The first layer is probably going to be a waste of time for us as well because there's very little interesting semantic content there. But if I go into the middle, in layer 3, we may well be able to find some differences there.
-
-Then what you can do is you can click on the projection button here (you can actually just press up and down rather than just pressing the the arrows at the top) to switch between projections or left and right so switch between layers. And what you can do is you can basically look around until you notice that there's a projection which is kind of separated out things you're interested in. So this one actually I notice that it's got a whole bunch of cars that are from the front right over here. So if we zoom in a little bit, we can double check - "yeah that looks pretty good, they're all kind of front right." So we can click on here to go to selection mode, and we can grab a few, and then you should check:
-
-![](lesson6/1.png)
-
-
-
-What we're doing here is we're trying to take advantage of the combination of human plus machine. The machine is pretty good at quickly doing calculations, but as a human I'm pretty good at looking at a lot of things at once and seeing the odd one out. So in this case I'm looking for cars that aren't front right, and so by laying them in front of me, I can do that really quickly. It's like "okay definitely that one" so just click on the ones that you don't want. All right, it's all good. 
-
-Then you can just go back. Then what you can do is you can either put them into a new category by typing in "create a new label" or you can click on one of the existing ones. So before I came, I just created a few. So here's front right, so I just click on it here. 
-
-The basic idea is that you keep flicking through different layers or projections to try and find groups that represent the things you're interested in, and then over time you'll start to realize that there are some things that are a little bit harder. For example, I'm having trouble finding sides, so what I can do is I can see over here there's a few sides, so I can zoom in here and click on a couple of them. Then I'll say "find similar" and this is going to basically look in that projection space and not just at the images that are currently displayed but all of the images that you uploaded, and hopefully I might be able to label a few more side images at that point. It's going through and checking  all of the images that you uploaded to see if any of them have projections in this space which are similar to the ones I've selected. Hopefully we'll find a few more of what I'm interested in.
-
-Now if I want to try to find a projection that separates the sides from the front right, I can click on each of those two and then over here this button is now called "switch to the projection that maximizes the distance between the labels." What this is going to do is it's going to try and find the best projection that separates out those classes. The goal here is to help me visually inspect and quickly find a bunch of things that I can use to label. 
-
-They're the kind of the the key features and it's done a good job. You can see down here, we've now got a whole bunch of sides which I can now grab because I was having a lot of trouble finding them before. And it's always worth double-checking. It's kind of interesting to see how the neural nets behave - like there seems to be more sports cars in this group than average as well. So it's kind of found side angles of sports cars, so that's kind of interesting. So I've got those, now I clicks "side" and there we go.
-
-Once you've done that a few times, I find if you've got a hundred or so labels, you can then click on the train model button, and it'll take a couple of minutes, and come back and show you your train model. After it's trained, which I did it on a smaller number of labels earlier, you can then switch this vary opacity button, and it'll actually fade out the ones that are already predicted pretty well. It'll also give you a estimate as to how accurate it thinks the model is. The main reason I mentioned this for you is so that you can now click the download button and it'll download the predictions, which is what we hope will be interesting to most people. But what I think will be interesting to you as deep learning students is it'll download your labels. So now you can use that labeled subset of data along with the unlabeled set that you haven't labeled yet to see if you can build a better model than platform.ai has done for you. See if you can use that initial set of data to get going, creating models which you weren't able to label before.
-
-Clearly, there are some things that this system is better at than others. For things that require really zooming in closely and taking a very very close inspection, this isn't going to work very well. This is really designed for things that the human eye can kind of pick up fairly readily. But we'd love to get feedback as well, and you can click on the Help button to give feedback. Also there's a [platform.ai discussion topic](https://forums.fast.ai/t/platform-ai-discussion/31445) in our forum. So Arshak if you can stand up, Arshak is the CEO of the company. He'll be there helping out answering questions and so forth. I hope people find that useful. It's been many years getting to this point, and I'm glad we're finally there.
-
 ### Finishing up regularization for the Tabular Learner[[9:48](https://youtu.be/U7c-nYXrKD4?t=588)]
 
-One of the reasons I wanted to mention this today is that we're going to be doing a big dive into convolutions later in this lesson. So I'm going to circle back to this to try and explain a little bit more about how that is working under the hood, and give you a kind of a sense of what's going on. But before we do, we have to finish off last week's discussion of regularization. We were talking about regularization specifically in the context of the tabular learner because the tabular learner, this is the init method in the tabular learner:
+* finish off last week's discussion of regularization. 
+ * specifically in the context of the tabular learner because the tabular learner, this is the init method in the tabular learner:
 
 ![](lesson6/2.png)
 
-And our goal was to understand everything here, and we're not quite there yet. Last week we were looking at the adult data set which is a really simple (kind of over simple) data set that's just for toy purposes. So this week, let's look at a data set that's much more interesting - a Kaggle competition data set so we know what the the best in the world and Kaggle competitions' results tend to be much harder to beat than academic state-of-the-art results tend to be because a lot more people work on Kaggle competitions than most academic data sets. So it's a really good challenge to try and do well on a Kaggle competition data set.
+If you want to predict things, there's no point predicting things that are in the middle of your training set. You want to predict things in the future.
 
-The rossmann data set is they've got 3,000 drug stores in Europe and you're trying to predict how many products they're going to sell in the next couple of weeks. One of the interesting things about this is that the test set for this is from a time period that is more recent than the training set. This is really common. If you want to predict things, there's no point predicting things that are in the middle of your training set. You want to predict things in the future.
-
-Another interesting thing about it is the evaluation metric they provided is the root mean squared percent error. 
+* valuation metric they provided is the root mean squared percent error. 
 
 <img src="https://latex.codecogs.com/gif.latex?\textrm{RMSPE}&space;=&space;\sqrt{\frac{1}{n}&space;\sum_{i=1}^{n}&space;\left(\frac{y_i&space;-&space;\hat{y}_i}{y_i}\right)^2}" title="\textrm{RMSPE} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} \left(\frac{y_i - \hat{y}_i}{y_i}\right)^2}" />
 
-This is just a normal root mean squared error except we go actual minus prediction divided by actual, so in other words it's the "percent" error that we're taking the root mean squared of. There's a couple of interesting features.
-
-Always interesting to look at the leaderboard. So the leaderboard, the winner was 0.1. The paper that we've roughly replicated was 0.105 ~ 0.106, and the 10th place out of 3,000 was 0.11ish - a bit less.
-
-We're gonna skip over a little bit. The data that was provided here was they provided a small number of files but they also let competitors provide additional external data as long as they shared it with all the competitors. So in practice the data set we're going to use contains six or seven tables. The way that you join tables and stuff isn't really part of a deep learning course. So I'm going to skip over it, and instead I'm going to refer you to [Introduction to Machine Learning for Coders](http://course.fast.ai/ml) which will take you step-by-step through the data preparation for this. We've provided it for you in [rossman_data_clean.ipynb](https://github.com/fastai/course-v3/blob/master/nbs/dl1/rossman_data_clean.ipynb) so you'll see the whole process there. You'll need to run through that notebook to create these pickle files that we read here ([lesson6-rossmann.ipynb](https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson6-rossmann.ipynb)):
-
-```
-%reload_ext autoreload
-%autoreload 2
-```
-
-```python
-from fastai.tabular import *
-```
-
-```python
-path = Path('data/rossmann/')
-train_df = pd.read_pickle(path/'train_clean')
-```
-
-
-
-#### Time Series and `add_datepart` [[13:21](https://www.youtube.com/watch?v=U7c-nYXrKD4&feature=youtu.be&t=530)]
-
-I just want to mention one particularly interesting part of the rossmann data clean notebook which is you'll see there's something that says `add_datepart` and I wanted to explain what's going on here.
-
-```python
-add_datepart(train, "Date", drop=False)
-add_datepart(test, "Date", drop=False)
-```
-
-I've been mentioning for a while that we're going to look at time series. Pretty much everybody whom I've spoken to about it has assumed that I'm going to do some kind of recurrent neural network. But I'm not. Interestingly, the main academic group that studies time series is econometrics but they tend to study one very specific kind of time series which is where the only data you have is a sequence of time points of one thing. That's the only thing you have is one sequence. In real life, that's almost never the case. Normally, we would have some information about the store that represents or the people that it represents. We'd have metadata, we'd have sequences of other things measured at similar time periods or different time periods. So most of the time, I find in practice the the state-of-the-art results when it comes to competitions on more real-world data sets don't tend to use recurrent neural networks. But instead, they tend to take the time piece which in this case it was a date we were given in the data, and they add a whole bunch of metadata. So in our case, for example, we've added day of week. We were given a date. We've added a day of week, year, month, week of year, day of month, day of week, day of year, and then a bunch of booleans is it at the month start/end, quarter year start/end, elapsed time since 1970, so forth.
-
-If you run this one function `add_datepart` and pass it a date, it'll add all of these columns to your data set for you. What that means is that, let's take a very reasonable example. Purchasing behavior probably changes on payday. Payday might be the fifteenth of the month. So if you have a thing here called this is day of month, then it'll be able to recognize every time something is a fifteen there and associated it with a higher, in this case, embedding matrix value. Basically, we can't expect a neural net to do all of our feature engineering for us. We can expect it to find nonlinearities and interactions and stuff like that. But for something like taking a date like this (`2015-07-31 00:00:00`) and figuring out that the fifteenth of the month is something when interesting things happen. It's much better if we can provide that information for it.
-
-So this is a really useful function to use. Once you've done this, you can treat many kinds of time-series problems as regular tabular problems. I say "many" kinds not "all". If there's very complex kind of state involved in a time series such as equity trading or something like that, this probably won't be the case or this won't be the only thing you need. But in this case, it'll get us a really good result and in practice, most of the time I find this works well.
-
-Tabular data is normally in Pandas, so we just stored them as standard Python pickle files. We can read them in. We can take a look at the first five records.
-
-```python
-train_df.head().T
-```
-
-|                           | 0                   | 1                   | 2                   | 3                   | 4                   |
-| ------------------------- | ------------------- | ------------------- | ------------------- | ------------------- | ------------------- |
-| index                     | 0                   | 1                   | 2                   | 3                   | 4                   |
-| Store                     | 1                   | 2                   | 3                   | 4                   | 5                   |
-| DayOfWeek                 | 5                   | 5                   | 5                   | 5                   | 5                   |
-| Date                      | 2015-07-31 00:00:00 | 2015-07-31 00:00:00 | 2015-07-31 00:00:00 | 2015-07-31 00:00:00 | 2015-07-31 00:00:00 |
-| Sales                     | 5263                | 6064                | 8314                | 13995               | 4822                |
-| Customers                 | 555                 | 625                 | 821                 | 1498                | 559                 |
-| Open                      | 1                   | 1                   | 1                   | 1                   | 1                   |
-| Promo                     | 1                   | 1                   | 1                   | 1                   | 1                   |
-| StateHoliday              | False               | False               | False               | False               | False               |
-| SchoolHoliday             | 1                   | 1                   | 1                   | 1                   | 1                   |
-| Year                      | 2015                | 2015                | 2015                | 2015                | 2015                |
-| Month                     | 7                   | 7                   | 7                   | 7                   | 7                   |
-| Week                      | 31                  | 31                  | 31                  | 31                  | 31                  |
-| Day                       | 31                  | 31                  | 31                  | 31                  | 31                  |
-| Dayofweek                 | 4                   | 4                   | 4                   | 4                   | 4                   |
-| Dayofyear                 | 212                 | 212                 | 212                 | 212                 | 212                 |
-| Is_month_end              | True                | True                | True                | True                | True                |
-| Is_month_start            | False               | False               | False               | False               | False               |
-| Is_quarter_end            | False               | False               | False               | False               | False               |
-| Is_quarter_start          | False               | False               | False               | False               | False               |
-| Is_year_end               | False               | False               | False               | False               | False               |
-| Is_year_start             | False               | False               | False               | False               | False               |
-| Elapsed                   | 1438300800          | 1438300800          | 1438300800          | 1438300800          | 1438300800          |
-| StoreType                 | c                   | a                   | a                   | c                   | a                   |
-| Assortment                | a                   | a                   | a                   | c                   | a                   |
-| CompetitionDistance       | 1270                | 570                 | 14130               | 620                 | 29910               |
-| CompetitionOpenSinceMonth | 9                   | 11                  | 12                  | 9                   | 4                   |
-| CompetitionOpenSinceYear  | 2008                | 2007                | 2006                | 2009                | 2015                |
-| Promo2                    | 0                   | 1                   | 1                   | 0                   | 0                   |
-| Promo2SinceWeek           | 1                   | 13                  | 14                  | 1                   | 1                   |
-| ...                       | ...                 | ...                 | ...                 | ...                 | ...                 |
-| Min_Sea_Level_PressurehPa | 1015                | 1017                | 1017                | 1014                | 1016                |
-| Max_VisibilityKm          | 31                  | 10                  | 31                  | 10                  | 10                  |
-| Mean_VisibilityKm         | 15                  | 10                  | 14                  | 10                  | 10                  |
-| Min_VisibilitykM          | 10                  | 10                  | 10                  | 10                  | 10                  |
-| Max_Wind_SpeedKm_h        | 24                  | 14                  | 14                  | 23                  | 14                  |
-| Mean_Wind_SpeedKm_h       | 11                  | 11                  | 5                   | 16                  | 11                  |
-| Max_Gust_SpeedKm_h        | NaN                 | NaN                 | NaN                 | NaN                 | NaN                 |
-| Precipitationmm           | 0                   | 0                   | 0                   | 0                   | 0                   |
-| CloudCover                | 1                   | 4                   | 2                   | 6                   | 4                   |
-| Events                    | Fog                 | Fog                 | Fog                 | NaN                 | NaN                 |
-| WindDirDegrees            | 13                  | 309                 | 354                 | 282                 | 290                 |
-| StateName                 | Hessen              | Thueringen          | NordrheinWestfalen  | Berlin              | Sachsen             |
-| CompetitionOpenSince      | 2008-09-15 00:00:00 | 2007-11-15 00:00:00 | 2006-12-15 00:00:00 | 2009-09-15 00:00:00 | 2015-04-15 00:00:00 |
-| CompetitionDaysOpen       | 2510                | 2815                | 3150                | 2145                | 107                 |
-| CompetitionMonthsOpen     | 24                  | 24                  | 24                  | 24                  | 3                   |
-| Promo2Since               | 1900-01-01 00:00:00 | 2010-03-29 00:00:00 | 2011-04-04 00:00:00 | 1900-01-01 00:00:00 | 1900-01-01 00:00:00 |
-| Promo2Days                | 0                   | 1950                | 1579                | 0                   | 0                   |
-| Promo2Weeks               | 0                   | 25                  | 25                  | 0                   | 0                   |
-| AfterSchoolHoliday        | 0                   | 0                   | 0                   | 0                   | 0                   |
-| BeforeSchoolHoliday       | 0                   | 0                   | 0                   | 0                   | 0                   |
-| AfterStateHoliday         | 57                  | 67                  | 57                  | 67                  | 57                  |
-| BeforeStateHoliday        | 0                   | 0                   | 0                   | 0                   | 0                   |
-| AfterPromo                | 0                   | 0                   | 0                   | 0                   | 0                   |
-| BeforePromo               | 0                   | 0                   | 0                   | 0                   | 0                   |
-| SchoolHoliday_bw          | 5                   | 5                   | 5                   | 5                   | 5                   |
-| StateHoliday_bw           | 0                   | 0                   | 0                   | 0                   | 0                   |
-| Promo_bw                  | 5                   | 5                   | 5                   | 5                   | 5                   |
-| SchoolHoliday_fw          | 7                   | 1                   | 5                   | 1                   | 1                   |
-| StateHoliday_fw           | 0                   | 0                   | 0                   | 0                   | 0                   |
-| Promo_fw                  | 5                   | 1                   | 5                   | 1                   | 1                   |
-
-93 rows × 5 columns
-
-The key thing here is that we're trying to on a particular date for a particular store ID, we want to predict the number of sales. Sales is the dependent variable. 
+ * normal root mean squared error except minus prediction divided by actual
+ * it's the "percent" error that we're taking the root mean squared of. 
+* `add_datepart` 
+ * time series: assumed recurrent neural network. 
+ * main academic group that studies time series is econometrics - they tend to study one very specific kind of time series which is where the only data you have is a sequence of time points of *one thing/sequence*
+ * In real life, that's almost never the case. 
+ * also have information about the store, the people, metadata, sequences of other things measured at similar time periods or different time periods.
+ * in practice most don't to use RNNs. Take the time piece (date), and add a whole bunch of metadata. 
+ * Added day of week, year, month, week of year, day of month, day of week, day of year, 
+ * Added a bunch of booleans: is it at the month start/end, quarter year start/end, elapsed time since 1970? etc.
+ * `add_datepart` adds all of these columns to your data set for you. 
+ * E.g. day of month, can recognize every time something is a fifteen there and associated it with a higher embedding matrix value. 
+ * Can't expect neural net to do all feature engineering. 
+ * Can expect it to find nonlinearities and interactions and stuff like that. 
+ * So this is a really useful function to use. Once you've done this, you can treat many kinds of time-series problems as regular tabular problems. I say "many" kinds not "all". If there's very complex kind of state involved in a time series such as equity trading or something like that, this probably won't be the case or this won't be the only thing you need. But in this case, it'll get us a really good result and in practice, most of the time I find this works well.
 
 ### Preprocesses [[16:52](https://youtu.be/U7c-nYXrKD4?t=1012)]
 
-The first thing I'm going to show you is something called pre-processes. You've already learned about transforms. **Transforms** are bits of code that **run every time something is grabbed from a data set** so it's really good for data augmentation that we'll learn about today, which is that it's going to get a different random value every time it's sampled. **Preprocesses** are like transforms, but they're a little bit different which is that they run once before you do any training. Really importantly, they **run once on the training set and then any kind of state or metadata that's created is then shared with the validation and test set**. 
+* **Transforms** are bits of code that **run every time something is grabbed from a data set** 
+ * Really good for data augmentation - get a different random value every time it's sampled.
+* **Preprocessors** are like transforms but run once before you do any training. 
+ * They are run once on the training set and then any kind of state or metadata that's created is then shared with the validation and test set
 
-Let me give you an example. When we've been doing image recognition and we've had a set of classes to all the different pet breeds and they've been turned into numbers. The thing that's actually doing that for us is a preprocessor that's being created in the background. That makes sure that the classes for the training set are the same as the classes for the validation and the classes of the test set. So we're going to do something very similar here. For example, if we create a little small subset of a data for playing with. This is a really good idea when you start with a new data set.
-
-```python
-idx = np.random.permutation(range(n))[:2000]
-idx.sort()
-small_train_df = train_df.iloc[idx[:1000]]
-small_test_df = train_df.iloc[idx[1000:]]
-small_cont_vars = ['CompetitionDistance', 'Mean_Humidity']
-small_cat_vars =  ['Store', 'DayOfWeek', 'PromoInterval']
-small_train_df = small_train_df[small_cat_vars + small_cont_vars + ['Sales']]
-small_test_df = small_test_df[small_cat_vars + small_cont_vars + ['Sales']]
-```
-
-I've just grabbed 2,000 IDs at random. Then I'm just going to grab a little training set and a little test set - half and half of those 2,000 IDs, and it's going to grab five columns. Then we can just play around with this. Nice and easy. Here's the first few of those from the training set:
-
-```python
-small_train_df.head()
-```
-
-|      | Store | DayOfWeek | PromoInterval   | CompetitionDistance | Mean_Humidity | Sales |
-| ---- | ----- | --------- | --------------- | ------------------- | ------------- | ----- |
-| 280  | 281   | 5         | NaN             | 6970.0              | 61            | 8053  |
-| 584  | 586   | 5         | NaN             | 250.0               | 61            | 17879 |
-| 588  | 590   | 5         | Jan,Apr,Jul,Oct | 4520.0              | 51            | 7250  |
-| 847  | 849   | 5         | NaN             | 5000.0              | 67            | 10829 |
-| 896  | 899   | 5         | Jan,Apr,Jul,Oct | 2590.0              | 55            | 5952  |
-
-You can see, one of them is called promo interval and it has these strings, and sometimes it's missing. In Pandas, missing is `NaN`. 
+* In Pandas, missing is `NaN`. 
 
 #### Preprocessor: Categorify [[18:39](https://youtu.be/U7c-nYXrKD4?t=1119)]
 
-The first preprocessor I'll show you is Categorify.
-
-```python
-categorify = Categorify(small_cat_vars, small_cont_vars)
-categorify(small_train_df)
-categorify(small_test_df, test=True)
-```
-
-Categorify does basically the same thing that `.classes` thing for image recognition does for a dependent variable. It's going to take these strings, it's going to find all of the possible unique values of it, and it's going to create a list of them, and then it's going to turn the strings into numbers. So if I call it on my training set, that'll create categories there (`small_train_df`) and then I call it on my test set passing in `test=true`, that makes sure it's going to use the same categories that I had before. Now when I say `.head`, it looks exactly the same:
-
-```python
-small_test_df.head()
-```
-
-|        | Store  | DayOfWeek | PromoInterval    | CompetitionDistance | Mean_Humidity | Sales |
-| ------ | ------ | --------- | ---------------- | ------------------- | ------------- | ----- |
-| 428412 | NaN    | 2         | NaN              | 840.0               | 89            | 8343  |
-| 428541 | 1050.0 | 2         | Mar,Jun,Sept,Dec | 13170.0             | 78            | 4945  |
-| 428813 | NaN    | 1         | Jan,Apr,Jul,Oct  | 11680.0             | 85            | 4946  |
-| 430157 | 414.0  | 6         | Jan,Apr,Jul,Oct  | 6210.0              | 88            | 6952  |
-| 431137 | 285.0  | 5         | NaN              | 2410.0              | 57            | 5377  |
-
-That's because Pandas has turned this into a categorical variable which internally is storing numbers but externally is showing me the strings. But I can look inside promo interval to look at the `cat.categories`, this is all standard Pandas here, to show me a list of all of what we would call "classes" in fast.ai or would be called just "categories" in Pandas.
+* Categorify does basically the same thing that `.classes` thing for image recognition does for a dependent variable. 
+* Takes strings, finds all of the possible unique values of it, creates a list of them, and turns the strings into numbers. 
 
 ```python
 small_train_df.PromoInterval.cat.categories
@@ -241,37 +66,20 @@ small_train_df['PromoInterval'].cat.codes[:5]
 dtype: int8
 ```
 
-So then if I look at the `cat.codes`, you can see here this list here is the numbers that are actually stored (-1, -1, 1, -1, 1). What are these minus ones? The minus ones represent `NaN` - they represent "missing". So Pandas uses the special code `-1` to be mean missing.
-
-As you know, these are going to end up in an embedding matrix, and we can't look up item -1 in an embedding matrix. So internally in fast.ai, we add one to all of these.
+* The minus ones represent `NaN` - they represent "missing". So Pandas uses the special code `-1` to be mean missing.
+* We can't look up item -1 in an embedding matrix. So internally in fast.ai, we add 1 to all of these.
 
 #### Preprocessor: Fill Missing [[20:18](https://youtu.be/U7c-nYXrKD4?t=1218)]
 
 Another useful preprocessor is `FillMissing`. Again, you can call it on the data frame, you can call on the test passing in `test=true`.
 
-```python
-fill_missing = FillMissing(small_cat_vars, small_cont_vars)
-fill_missing(small_train_df)
-fill_missing(small_test_df, test=True)
-```
-
-```python
-small_train_df[small_train_df['CompetitionDistance_na'] == True]
-```
-
-|        | Store | DayOfWeek | PromoInterval   | CompetitionDistance | Mean_Humidity | Sales | CompetitionDistance_na |
-| ------ | ----- | --------- | --------------- | ------------------- | ------------- | ----- | ---------------------- |
-| 78375  | 622   | 5         | NaN             | 2380.0              | 71            | 5390  | True                   |
-| 161185 | 622   | 6         | NaN             | 2380.0              | 91            | 2659  | True                   |
-| 363369 | 879   | 4         | Feb,May,Aug,Nov | 2380.0              | 73            | 4788  | True                   |
-
-This will create, for anything that has a missing value, it'll create an additional column with the column name underscore na (e.g. `CompetitionDistance_na`) and it will set it for true for any time that was missing. Then what we do is, we replace competition distance with the median for those. Why do we do this? Well, because very commonly the fact that something's missing is of itself interesting (i.e. it turns out the fact that this is missing helps you predict your outcome). So we certainly want to keep that information in a convenient boolean column, so that our deep learning model can use it to predict things.
-
-But then, we need competition distance to be a continuous variable so we can use it in the continuous variable part of our model. So we can replace it with almost any number because if it turns out that the missingness is important, it can use the interaction of `CompetitionDistance_na` and `CompetitionDistance` to make predictions. So that's what FillMissing does.
+* For anything that has a missing value, creates an additional column with the column name "\_na" (e.g. `CompetitionDistance_na`) and it will set it for true for any time that was missing. 
+* Replaces competition distance with the median for those. The fact that something's missing is of itself interesting (i.e. it turns out the fact that this is missing helps you predict your outcome). So we certainly want to keep that information in a convenient boolean column, so that our deep learning model can use it to predict things.
+* We need competition distance to be a continuous variable so we can use it in the continuous variable part of our model. So we can replace it with almost any number because if it turns out that the missingness is important, it can use the interaction of `CompetitionDistance_na` and `CompetitionDistance` to make predictions.
 
 [[21:31](https://youtu.be/U7c-nYXrKD4?t=1291)]
 
-You don't have to manually call preprocesses yourself. When you call any kind of item list creator, you can pass in a list of pre processes which you can create like this:
+* When you call any kind of item list creator, you can pass in a list of pre processors which you can create like this:
 
 ```python
 procs=[FillMissing, Categorify, Normalize]
@@ -284,9 +92,8 @@ data = (TabularList.from_df(df, path=path, cat_names=cat_vars, cont_names=cont_v
                    .databunch())
 ```
 
-This is saying "ok, I want to fill missing, I want to categorify, I want to normalize (i.e. for continuous variables, it'll subtract the mean and divide by the standard deviation to help a train more easily)." So you just say, those are my procs and then you can just pass it in there and that's it.
-
-Later on, you can go `data.export` and it'll save all the metadata for that data bunch so you can, later on, load it in knowing exactly what your category codes are, exactly what median values used for replacing the missing values, and exactly what means and standard deviations you normalize by. 
+* "Normalize" for continuous variables, subtracts the mean and divide by the standard deviation to help a train more easily)
+* You can use `data.export` to save all the metadata for that data bunch. You can load it in knowing exactly what your category codes are, exactly what median values used for replacing the missing values, and exactly what means and standard deviations you normalize by. 
 
 #### Categorical and Continuous Variables [[22:23](https://youtu.be/U7c-nYXrKD4?t=1343)]
 
