@@ -61,17 +61,7 @@ y = x@a + torch.rand(n)
 
 [[1:17:57](https://youtu.be/Egp4Zajhzog?t=4677)]
 
-So we basically are going to generate some data by creating a line and then we're going to add some random numbers to it. But let's go back and see how we created `x` and `a`. I mentioned that we've basically got these two coefficients 3 and 2. And you'll see that we've wrapped it in this function called `tensor`. You might have heard this word "tensor" before. It's one of these words that sounds scary and apparently if you're a physicist, it actually is scary. But in the world of deep learning, it's actually not scary at all. "tensor" means array, but specifically it's an array of a regular shape. So it's not an array where row 1 has two things, row 3 has three things, and row 4 has one thing, what you call a "jagged array". That's not a tensor.  A tensor is any array which has a rectangular or cube or whatever ﹣ a shape where every row is the same length and every column is the same length. The following are all tensors:
-
-- 4 by 3 matrix
-- A vector of length 4
-- A 3D array of length 3 by 4 by 6
-
-That's all tensor is. We have these all the time. For example, an image is a 3 dimensional tensor. It's got number of rows by number of columns by number of channels (normally red, green, blue). So for example, VGA picture could be 640 by 480 by 3 or actually we do things backwards so when people talk about images, they normally go width by height, but when we talk mathematically, we always go a number of rows by number of columns, so it would actually be 480 by 640 by 3 that will catch you out. We don't say dimensions, though, with tensors. We use one of two words, we either say rank or axis. Rank specifically means how many axes are there, how many dimensions are there. So an image is generally a rank 3 tensor. What we created here is a rank 1 tensor (also known as a vector). But in math, people come up with very different words for slightly different concepts. Why is a one dimensional array a vector and a two dimensional array is a matrix, and a three dimensional array doesn't have a name. It doesn't make any sense. With computers, we try to have some simple consistent naming conventions. They are all called tensors﹣rank 1 tensor, rank 2 tensor, rank 3 tensor. You can certainly have a rank 4 tensor. If you've got 64 images, then that would be a rank 4 tensor of 64 by 480 by 640 by 3. So tensors are very simple. They just mean arrays.
-
-
-
-In PyTorch, you say `tensor` and you pass in some numbers, and you get back, which in this case just a list,  a vector. This then represents our coefficients: the slope and the intercept of our line.
+So we basically are going to generate some data by creating a line and then we're going to add some random numbers to it. 
 
 ![](../lesson2/28.png)
 
